@@ -16,11 +16,17 @@ Este proyecto implementa un motor de búsqueda semántica utilizando el modelo `
 
 2. **Ejecutar el contenedor:**
    ```bash
-   docker run -p 8000:8000 faiss-fastapi
+   docker run -it --rm faiss-fastapi
    ```
 
 3. **Probar la API:**
-   Abre tu navegador en `http://localhost:8000/docs` para acceder a la interfaz interactiva de Swagger.
+
+   `Tipear la consulta deseada `
+
+
+4. **Terminar ejecucion**
+
+    Tipear `exit`
 
 ## 🛠️ Estructura del Proyecto
 * `app.py`: Servidor FastAPI con lógica de búsqueda y persistencia.

@@ -1,4 +1,4 @@
-
+import sys
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
@@ -24,16 +24,29 @@ index = faiss.IndexFlatL2(dimension)
 index.add(embeddings)
 
 # 5. Realizar una búsqueda semántica
-consulta = "Me encanta escribir código"
-query_vector = model.encode([consulta]).astype('float32')
+# Capturar consulta (Parámetro o Prompt)
+continuar = True
+while(continuar):
 
-# Buscar el vector más similar (k=1)
-distancia, indice_resultado = index.search(query_vector, k=1)
+    if len(sys.argv) > 1:
+         consulta = " ".join(sys.argv[1:])
+    else:
+         consulta = input("Introduce tu búsqueda: ")
 
-# 6. Mostrar el resultado
-respuesta = frases[indice_resultado[0][0]]
-print(f"\n--- Resultado de la Búsqueda ---")
-print(f"Consulta: {consulta}")
-print(f"Respuesta encontrada: {respuesta}")
+    if consulta == "exit":
+        continuar = False
+    else :
+        #consulta = "Me encanta escribir código"
+        query_vector = model.encode([consulta]).astype('float32')
+
+        # Buscar el vector más similar (k=1)
+        distancia, indice_resultado = index.search(query_vector, k=1)
+
+        # Mostrar el resultado
+        respuesta = frases[indice_resultado[0][0]]
+        print(f"\n--- Resultado de la Búsqueda ---")
+        print(f"Consulta: {consulta}")
+        print(f"Respuesta encontrada: {respuesta}")
+
 
 
