@@ -11,22 +11,24 @@ Este proyecto implementa un motor de búsqueda semántica utilizando el modelo `
 ### Ejecución con Docker (Recomendado)
 1. **Construir la imagen:**
    ```bash
-   docker build -t faiss-fastapi .
+   docker build -t buscador-faiss .
    ```
 
 2. **Ejecutar el contenedor:**
    ```bash
-   docker run -it --rm faiss-fastapi
+   docker run -p 8000:8000 --name mi_buscador buscador-faiss
    ```
 
 3. **Probar la API:**
 
-   `Tipear la consulta deseada `
+   En el navegador ingresar  
+   `http://localhost:8000/docs `
 
+![api](/assets/api.png)
 
-4. **Terminar ejecucion**
+4. **Ingresar consulta**
 
-    Tipear `exit`
+    Tipear `consulta deseada`
 
 ## 🛠️ Estructura del Proyecto
 * `app.py`: Servidor FastAPI con lógica de búsqueda y persistencia.

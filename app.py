@@ -2,9 +2,22 @@ import sys
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
+from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
+
 
 # 1. Cargar el modelo de embeddings
 model = SentenceTransformer('all-MiniLM-L6-v2')
+# Inicializar FastAPI
+app = FastAPI()
+# Permitir que cualquier página web consulte tu API (CORS)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # 2. Definir datos de ejemplo
 frases = [
@@ -25,28 +38,22 @@ index.add(embeddings)
 
 # 5. Realizar una búsqueda semántica
 # Capturar consulta (Parámetro o Prompt)
-continuar = True
-while(continuar):
+# Endpoint para recibir la consulta desde el navegador
+@app.get("/buscar")
+def buscar(consulta: str = Query(..., description="Texto a buscar")):
+    query_vector = model.encode([consulta]).astype('float32')
+    distancia, indice_resultado = index.search(query_vector, k=1)
 
-    if len(sys.argv) > 1:
-         consulta = " ".join(sys.argv[1:])
-    else:
-         consulta = input("Introduce tu búsqueda: ")
+    respuesta = frases[indice_resultado[0][0]]
+    distancia_valor = float(distancia[0][0])
 
-    if consulta == "exit":
-        continuar = False
-    else :
-        #consulta = "Me encanta escribir código"
-        query_vector = model.encode([consulta]).astype('float32')
+    # Retornar JSON al navegador
+    return {
+        "consulta": consulta,
+        "respuesta": respuesta,
+        "distancia": distancia_valor
+    }
 
-        # Buscar el vector más similar (k=1)
-        distancia, indice_resultado = index.search(query_vector, k=1)
-
-        # Mostrar el resultado
-        respuesta = frases[indice_resultado[0][0]]
-        print(f"\n--- Resultado de la Búsqueda ---")
-        print(f"Consulta: {consulta}")
-        print(f"Respuesta encontrada: {respuesta}")
 
 
 
